@@ -35,8 +35,8 @@ public class OrdersController : Controller
     {
         // Обърнете внимание: търсим само по Id, без проверка за собственост
         var uid = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == id);
-        //var order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == id && o.UserId == uid); // fixed
+        //var order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == id);
+        var order = await _db.Orders.FirstOrDefaultAsync(o => o.Id == id && o.UserId == uid); // fixed
         if (order == null) return NotFound();
         return View(order);
     }
