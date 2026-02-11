@@ -14,13 +14,18 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var uid = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var uid = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!); //Взима ID-то на логнатия потребител
 
-        var orders = await _db.Orders
+        var myOrders = await _db.Orders
             .Where(o => o.UserId == uid)
             .OrderByDescending(o => o.Id)
-            .ToListAsync();
+            .ToListAsync(); // Чете поръчките от базата спрямо логнатия потребител
 
-        return View(orders);
+        var allOrders = await _db.Orders
+            .OrderByDescending(o => o.Id)
+            .ToListAsync(); // Чете всички поръчки от базата
+
+        ViewBag.AllOrders = allOrders; //Подава всички поръчки към View-то през ViewBag. ViewBag е „чанта“ за допълнителни данни към View-то. Така View-то може да показва и публичен списък от поръчки.
+        return View(myOrders);
     }
 }
