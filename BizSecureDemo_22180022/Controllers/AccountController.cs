@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 namespace BizSecureDemo.Controllers;
 public class AccountController : Controller
@@ -36,6 +37,7 @@ public class AccountController : Controller
         return RedirectToAction("Login");
     }
     [HttpPost]
+    [EnableRateLimiting("login")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginVm vm)
     {
