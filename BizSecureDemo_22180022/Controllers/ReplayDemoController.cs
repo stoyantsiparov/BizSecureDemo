@@ -10,7 +10,7 @@ namespace BizSecureDemo_22180022.Controllers
     public class ReplayDemoController : Controller
     {
         private static decimal _balance = 1000m;
-        //private static readonly HashSet<string> _usedNonces = new();
+        private static readonly HashSet<string> _usedNonces = new();
         private readonly AppDbContext _db;
         public ReplayDemoController(AppDbContext db)
         {
@@ -29,7 +29,7 @@ namespace BizSecureDemo_22180022.Controllers
                 Balance = _balance,
                 Message = TempData["Message"]?.ToString(),
                 UserId = userId,
-                //Nonce = Guid.NewGuid().ToString()
+                Nonce = Guid.NewGuid().ToString()
             };
             return View(vm);
         }
@@ -47,17 +47,17 @@ namespace BizSecureDemo_22180022.Controllers
                 TempData["Message"] = "Invalid token.";
                 return RedirectToAction(nameof(Index));
             }
-            //if (string.IsNullOrWhiteSpace(vm.Nonce))
-            //{
-            //    TempData["Message"] = "Missing nonce.";
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //if (_usedNonces.Contains(vm.Nonce))
-            //{
-            //    TempData["Message"] = "Replay attack detected. Request already used.";
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //_usedNonces.Add(vm.Nonce);
+            if (string.IsNullOrWhiteSpace(vm.Nonce))
+            {
+                TempData["Message"] = "Missing nonce.";
+                return RedirectToAction(nameof(Index));
+            }
+            if (_usedNonces.Contains(vm.Nonce))
+            {
+                TempData["Message"] = "Replay attack detected. Request already used.";
+                return RedirectToAction(nameof(Index));
+            }
+            _usedNonces.Add(vm.Nonce);
             if (vm.Amount <= 0)
             {
                 TempData["Message"] = "Amount must be greater than 0.";
